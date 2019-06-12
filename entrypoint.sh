@@ -1,31 +1,22 @@
 #!/bin/sh
 
-if [ -z "$MNPRIVKEY" ]; then
-    echo "generating new mn private key and ip addr"
-    cd /
-    ./ImageCoind -daemon
-    sleep 5s;
-    export MNPRIVKEY=`./ImageCoin-cli masternode genkey`
-    
-    sed -i '$d' ~/.imagecoincore/imagecoin.conf
-    sed -i '$d' ~/.imagecoincore/imagecoin.conf
-    sed -i '$d' ~/.imagecoincore/imagecoin.conf
-    echo masternodeprivkey=$MNPRIVKEY >> ~/.imagecoincore/imagecoin.conf
-    echo externalip=`curl ifconfig.co` >> ~/.imagecoincore/imagecoin.conf
-    echo masternode=1 >> ~/.imagecoincore/imagecoin.conf
-    echo "stopping imaged"
-    ./ImageCoin-cli stop
-    sleep 5s;
+export BINARYPATH=/root/.axecore
+export CONFIGPATH=/root/.axecore
+export CONFIGFILE=axe.conf
+
+if [ -z "$MNPRIVKEY" ] || [ -z "$BLSKEY" ]; then
+    echo "must provide a mn key and blskey"
 else
-    sed -i '$d' ~/.imagecoincore/imagecoin.conf
-    sed -i '$d' ~/.imagecoincore/imagecoin.conf
-    sed -i '$d' ~/.imagecoincore/imagecoin.conf
-    echo masternodeprivkey=$MNPRIVKEY >> ~/.imagecoincore/imagecoin.conf
-    echo externalip=`curl ifconfig.co` >>~/.imagecoincore/imagecoin.conf
-    echo masternode=1 >> ~/.imagecoincore/imagecoin.conf
+    sed -i '$d' $CONFIGPATH/$CONFIGFILE
+    sed -i '$d' $CONFIGPATH/$CONFIGFILE
+    sed -i '$d' $CONFIGPATH/$CONFIGFILE
+    echo masternodeprivkey=$MNPRIVKEY >> $CONFIGPATH/$CONFIGFILE
+    echo externalip=`curl ifconfig.co` >>$CONFIGPATH/$CONFIGFILE
+    echo masternode=1 >> $CONFIGPATH/$CONFIGFILE
+    echo masternodeblsprivkey=$BLSKEY >> $CONFIGPATH/$CONFIGFILE
 fi
 
-cat ~/.imagecoincore/imagecoin.conf
-echo "starting imaged"
+cat $CONFIGPATH/$CONFIGFILE
+echo "starting axed"
 cd /root
-./ImageCoind
+./axed
