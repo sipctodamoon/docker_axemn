@@ -20,5 +20,5 @@ fi
 
 cat $CONFIGPATH/$CONFIGFILE
 echo "starting axed"
-cd /root
+cd $BINARYPATH
 ./axed
